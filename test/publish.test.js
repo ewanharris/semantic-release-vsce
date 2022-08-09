@@ -37,10 +37,16 @@ test('publish', async t => {
   });
   const result = await publish(version, undefined, logger);
 
-  t.deepEqual(result, {
-    name: 'Visual Studio Marketplace',
-    url: `https://marketplace.visualstudio.com/items?itemName=${publisher}.${name}`
-  });
+  t.deepEqual(result, [
+    {
+      name: 'Visual Studio Marketplace',
+      url: `https://marketplace.visualstudio.com/items?itemName=${publisher}.${name}`
+    },
+    {
+      name: 'Open VSX Registry',
+      url: `https://open-vsx.org/extension/${publisher}/${name}/${version}`
+    }
+  ]);
   t.deepEqual(execaStub.getCall(0).args, ['vsce', ['publish', version, '--no-git-tag-version'], { stdio: 'inherit' }]);
 });
 
@@ -66,10 +72,16 @@ test('publish with packagePath', async t => {
   });
   const result = await publish(version, packagePath, logger);
 
-  t.deepEqual(result, {
-    name: 'Visual Studio Marketplace',
-    url: `https://marketplace.visualstudio.com/items?itemName=${publisher}.${name}`
-  });
+  t.deepEqual(result, [
+    {
+      name: 'Visual Studio Marketplace',
+      url: `https://marketplace.visualstudio.com/items?itemName=${publisher}.${name}`
+    },
+    {
+      name: 'Open VSX Registry',
+      url: `https://open-vsx.org/extension/${publisher}/${name}/${version}`
+    }
+  ]);
   t.deepEqual(execaStub.getCall(0).args, ['vsce', ['publish', '--packagePath', packagePath], { stdio: 'inherit' }]);
 });
 
@@ -96,15 +108,16 @@ test('publish to OpenVSX', async t => {
   });
   const result = await publish(version, packagePath, logger);
 
-  t.deepEqual(result, {
-    name: 'Visual Studio Marketplace',
-    url: `https://marketplace.visualstudio.com/items?itemName=${publisher}.${name}`
-  });
+  t.deepEqual(result, [
+    {
+      name: 'Visual Studio Marketplace',
+      url: `https://marketplace.visualstudio.com/items?itemName=${publisher}.${name}`
+    },
+    {
+      name: 'Open VSX Registry',
+      url: `https://open-vsx.org/extension/${publisher}/${name}/${version}`
+    }
+  ]);
   t.deepEqual(execaStub.getCall(0).args, ['vsce', ['publish', '--packagePath', packagePath], { stdio: 'inherit' }]);
-
-  // t.deepEqual(result[1], {
-  //   name: 'Open VSX Registry',
-  //   url: `https://open-vsx.org/extension/${publisher}/${name}/${version}`
-  // });
   t.deepEqual(execaStub.getCall(1).args, ['ovsx', ['publish', packagePath], { stdio: 'inherit' }]);
 });
